@@ -22,4 +22,11 @@ RSpec.describe User, type: :model do
 
   # ユーザーのフルネームを文字列として返すこと
   it { is_expected.to satisfy { |user| user.name == 'Aaron Sumner' } }
+
+  # アカウントが作成されたときにウェルカムメールを送信すること
+  it 'sends a welcome email on account creation' do
+    allow(UserMailer).to receive_message_chain(:welcome_email, :deliver_later)
+    user = FactoryBot.create(:user)
+    expect(UserMailer).to have_received(:welcome_email).with(user)
+  end
 end
